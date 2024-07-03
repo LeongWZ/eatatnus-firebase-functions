@@ -24,3 +24,15 @@ export const annotateImage = onCall(
     }
   }
 );
+
+export const batchAnnotateImage = onCall(
+  {region: "asia-southeast1"},
+  async (request) => {
+    try {
+      return await client.batchAnnotateImages(request.data);
+    } catch (e) {
+      // @ts-expect-error: catch vision api errors
+      throw new HttpsError("internal", e.message, e.details);
+    }
+  }
+);
