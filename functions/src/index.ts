@@ -13,19 +13,7 @@ const client = new vision.ImageAnnotatorClient();
 // For more fine-grained control, you may add additional failure checks, ie:
 //    || context.auth.token?.firebase?.email_verified === false
 // Also see: https://firebase.google.com/docs/auth/admin/custom-claims
-export const annotateImage = onCall(
-  {region: "asia-southeast1"},
-  async (request) => {
-    try {
-      return await client.annotateImage(request.data);
-    } catch (e) {
-      // @ts-expect-error: catch vision api errors
-      throw new HttpsError("internal", e.message, e.details);
-    }
-  }
-);
-
-export const batchAnnotateImage = onCall(
+export const batchAnnotateImages = onCall(
   {region: "asia-southeast1"},
   async (request) => {
     try {
