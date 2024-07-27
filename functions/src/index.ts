@@ -16,6 +16,13 @@ const client = new vision.ImageAnnotatorClient();
 export const batchAnnotateImages = onCall(
   {region: "asia-southeast1"},
   async (request) => {
+    if (!request.auth) {
+      throw new HttpsError(
+        "unauthenticated",
+        "annotateImage must be called while authenticated."
+      );
+    }
+
     try {
       return await client.batchAnnotateImages(request.data);
     } catch (e) {
