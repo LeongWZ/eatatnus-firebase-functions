@@ -1,21 +1,10 @@
 import {onCall, HttpsError} from "firebase-functions/v2/https";
-import {VertexAI} from "@google-cloud/vertexai";
+import {GoogleGenerativeAI} from "@google/generative-ai";
+import {defineString} from "firebase-functions/params";
 
-const vertexAi = new VertexAI({
-  project: process.env.GCLOUD_PROJECT,
-  location: "asia-southeast1",
-});
+const GEMINI_API_KEY = defineString("GEMINI_API_KEY");
 
 const model = "gemini-1.5-flash";
-
-const generativeModel = vertexAi.preview.getGenerativeModel({
-  model: model,
-  generationConfig: { // Test impact of parameters: https://makersuite.google.com
-    maxOutputTokens: 512,
-    temperature: 0.9,
-    topP: 1,
-  },
-});
 
 export const generateContent = onCall(
   {region: "asia-southeast1"},
@@ -26,6 +15,17 @@ export const generateContent = onCall(
         "generateContent must be called while authenticated."
       );
     }
+
+    const genAI = new GoogleGenerativeAI(GEMINI_API_KEY.value());
+
+    const generativeModel = genAI.getGenerativeModel({
+      model: model,
+      generationConfig: {
+        maxOutputTokens: 512,
+        temperature: 0.9,
+        topP: 1,
+      },
+    });
 
     try {
       const content = await generativeModel.generateContent(request.data);
